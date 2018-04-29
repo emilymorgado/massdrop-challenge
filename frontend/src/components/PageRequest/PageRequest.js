@@ -8,6 +8,7 @@ class PageRequest extends Component {
     this.state = {
       pageUrl: '',
       feedback: '',
+      html: '',
     };
     this.handleFormSubmit = this.handleFormSubmit.bind(this)
     this.handleClearForm = this.handleClearForm.bind(this)
@@ -45,10 +46,9 @@ class PageRequest extends Component {
     }
 
   requestSuccess(res) {
-    this.handleClearForm();
     this.setState({
-      feedback: 'Processing Request.'
-    })
+      feedback: `Processing Request for: ${res.data}`
+    });
   }
 
   requestFail(err) {
