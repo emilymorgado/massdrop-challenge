@@ -13,25 +13,28 @@ class PageRequest extends Component {
     };
     this.handleFormSubmit = this.handleFormSubmit.bind(this)
     this.handleTextChange = this.handleTextChange.bind(this)
-    this.authenticateText = this.authenticateText.bind(this)
+    this.addNewSite = this.addNewSite.bind(this)
     this.requestSuccess = this.requestSuccess.bind(this)
     this.requestFail = this.requestFail.bind(this)
     this.handleJob = this.handleJob.bind(this)
   }
 
+  // Tracks text changes as user types
+  handleTextChange(event) {
+    this.setState({ pageUrl: event.target.value });
+  }
+
+  // Form submission for user's entered URL. Calls POST request
   handleFormSubmit(event) {
     event.preventDefault();
     const payload = {
       urlRequest: this.state.pageUrl,
     };
-    this.authenticateText(payload);
+    this.addNewSite(payload);
   }
 
-  handleTextChange(event) {
-    this.setState({ pageUrl: event.target.value });
-  }
-
-  authenticateText(payload) {
+  // POST request: Adds new website to DB
+  addNewSite(payload) {
     axios.post('http://localhost:3005/v1/website/add', {
       url: payload.urlRequest
     })
@@ -39,6 +42,7 @@ class PageRequest extends Component {
       .catch(err => {this.requestFail(err)})
     }
 
+  // Messages a success to user
   requestSuccess(res) {
     this.setState({
       urlId: res.data,
@@ -46,6 +50,7 @@ class PageRequest extends Component {
     });
   }
 
+  // Messages a failure to user
   requestFail(err) {
     this.setState({
       feedback: 'Request Failed'
@@ -53,6 +58,7 @@ class PageRequest extends Component {
     console.log(err);
   }
 
+  // GET request: Retrieves HTML from DB and saves to state
   handleJob() {
     axios.get(`http://localhost:3005/v1/website/${this.state.urlId}`)
       .then(res => {
@@ -93,7 +99,6 @@ class PageRequest extends Component {
             value={'Submit'}
           />
          </Button>
-
 
         <div style={styles.showHTML}>
           {this.state.html}

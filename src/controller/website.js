@@ -7,8 +7,10 @@ export default({ config, db }) => {
   let api = Router();
   api.use(cors());
 
+  // newSite will be a mongoose model. Saving user requested website.
+  // Calls getHtml() which makes a GET request to the requested website.
   api.post('/add', (req, res) => {
-    let newSite = new Website();  // will be a mongoose model
+    let newSite = new Website();
     newSite.url = req.body.url;
     newSite.html = '';
 
@@ -21,6 +23,7 @@ export default({ config, db }) => {
     });
   });
 
+  // GET request for HTML
   api.get('/:id', (req, res) => {
     Website.findById(req.params.id, (err, website) => {
       if (err) {
@@ -34,8 +37,8 @@ export default({ config, db }) => {
 }
 
 
-// Other Methods
-// GET and save website HTML
+// Other Functions:
+// Makes a GET request to outside website, and saves HTML to DB
 let getHtml = (url, id) => {
   var http = require("https");
 
@@ -72,6 +75,5 @@ let getHtml = (url, id) => {
       })
     });
   });
-
   req.end();
 }
