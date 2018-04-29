@@ -21,31 +21,22 @@ export default({ config, db }) => {
     });
   });
 
-  // api.get('/', (req, res) => {
-  //   Website.findById(req.params.data, (err, websites) => {
-  //     if (err) {
-  //       res.send(err);
-  //     }
-  //     res.json(websites);
-  //   });
-  // });
-
   api.get('/:id', (req, res) => {
     Website.findById(req.params.id, (err, website) => {
       if (err) {
         res.send(err);
       }
-      res.json(website);
+      res.send(website.html);
     });
   });
 
   return api;
 }
 
+
 // Other Methods
 // GET and save website HTML
 let getHtml = (url, id) => {
-  console.log("getHtml called", url)
   var http = require("https");
 
   var options = {
@@ -67,8 +58,7 @@ let getHtml = (url, id) => {
 
     res.on("end", function () {
       var body = Buffer.concat(chunks);
-      console.log(body.toString());
-      // Put it in the DB
+      // Save it in the DB
       Website.findById(id, (err, website) => {
         if (err) {
           res.send(err);
@@ -78,7 +68,6 @@ let getHtml = (url, id) => {
           if (err) {
             res.send(err);
           }
-          res.json({ message: "HTML was saved" });
         })
       })
     });

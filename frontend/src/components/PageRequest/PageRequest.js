@@ -7,15 +7,16 @@ class PageRequest extends Component {
     super (props);
     this.state = {
       pageUrl: '',
+      urlId: '',
       feedback: '',
       html: '',
     };
     this.handleFormSubmit = this.handleFormSubmit.bind(this)
-    this.handleClearForm = this.handleClearForm.bind(this)
     this.handleTextChange = this.handleTextChange.bind(this)
     this.authenticateText = this.authenticateText.bind(this)
     this.requestSuccess = this.requestSuccess.bind(this)
     this.requestFail = this.requestFail.bind(this)
+    this.handleJob = this.handleJob.bind(this)
   }
 
   handleFormSubmit(event) {
@@ -24,13 +25,6 @@ class PageRequest extends Component {
       urlRequest: this.state.pageUrl,
     };
     this.authenticateText(payload);
-  }
-
-  handleClearForm() {
-    this.setState({
-      pageUrl: '',
-      feedback: ''
-    });
   }
 
   handleTextChange(event) {
@@ -47,17 +41,29 @@ class PageRequest extends Component {
 
   requestSuccess(res) {
     this.setState({
+      urlId: res.data,
       feedback: `Processing Request for: ${res.data}`
     });
   }
 
   requestFail(err) {
-    this.handleClearForm();
     this.setState({
       feedback: 'Request Failed'
     });
     console.log(err);
   }
+
+  handleJob() {
+    axios.get(`http://localhost:3005/v1/website/${this.state.urlId}`)
+      .then(res => {
+        this.setState({
+          html: res.data,
+          feedback: 'Successfully retrieved HTML'
+        })
+      })
+      .catch(err => {this.requestFail(err)})
+  }
+
 
   render() {
     return (
@@ -80,6 +86,19 @@ class PageRequest extends Component {
             />
            </Button>
         </form>
+
+        <Button buttonText='Check Job' onClick={this.handleJob}>
+          <input
+            type={'submit'}
+            value={'Submit'}
+          />
+         </Button>
+
+
+        <div style={styles.showHTML}>
+          {this.state.html}
+        </div>
+
       </div>
     );
   }
@@ -89,7 +108,11 @@ const styles = {
   feedbackTextStyle: {
     fontSize: 20,
     alignSelf: 'center',
-    color: 'blue'
+    color: 'blue',
+  },
+  showHTML: {
+    backgroundColor: 'yellow',
+    color: 'black',
   }
 };
 
