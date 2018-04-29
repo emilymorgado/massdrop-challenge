@@ -62,10 +62,12 @@ class PageRequest extends Component {
   handleJob() {
     axios.get(`http://localhost:3005/v1/website/${this.state.urlId}`)
       .then(res => {
-        this.setState({
-          html: res.data,
-          feedback: 'Successfully retrieved HTML'
-        })
+        this.setState({html: res.data})
+        if (this.state.html.length > 0) {
+          this.setState({feedback: 'Successfully retrieved HTML'});
+        } else {
+          this.setState({feedback: 'Sadly, no HTML was saved' });
+        }
       })
       .catch(err => {this.requestFail(err)})
   }
@@ -118,6 +120,8 @@ const styles = {
   showHTML: {
     backgroundColor: 'yellow',
     color: 'black',
+    width: '1000px',
+    marginLeft: '250px',
   }
 };
 
