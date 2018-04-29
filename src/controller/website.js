@@ -1,9 +1,11 @@
 import mongoose from 'mongoose';
+import cors from 'cors';
 import { Router } from 'express';
 import Website from '../model/website';
 
 export default({ config, db }) => {
   let api = Router();
+  api.use(cors());
 
   api.post('/add', (req, res) => {
     let newSite = new Website();  // will be a mongoose model
